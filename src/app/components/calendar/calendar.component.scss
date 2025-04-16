@@ -1,3 +1,175 @@
-.spacer {
-  flex: 1 1 auto;
+@import "../../../assets/styles/variables";
+
+$toolbar-height: 64px;
+$calendar-legend-height: 36px;
+$header-height: $toolbar-height + $calendar-legend-height;
+
+:host {
+  display: grid;
+  grid-template-rows: 64px 1fr;
+  height: 100%;
+}
+
+.toolbar {
+  height: $toolbar-height;
+
+  mat-toolbar {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}
+
+.calendar {
+  position: relative;
+  display: grid;
+  grid-template-rows: #{$calendar-legend-height} 1fr;
+  height: 100%;
+
+  &__header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: $color-blue-500;
+    color: white;
+
+    .header__cell {
+      padding: 8px 10px;
+      text-align: center;
+    }
+  }
+
+  &__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr)); // optimized for overflow inside a grid column
+    height: 100%;
+
+    .grid__cell {
+      $grid-padding: 5px;
+      $grid-rows: 5;
+      $reminder-height: 17px;
+      $reminders-gap: 2px;
+
+      position: relative;
+      height: calc((100vh - #{$header-height}) / #{$grid-rows});
+      min-height: 75px;
+      background-color: $color-gray-200;
+      box-shadow: 0 0 0 1px black;
+      transition: background-color .15s ease-in;
+      padding: $grid-padding;
+      cursor: pointer;
+
+      h3 {
+        $marker-size: 24px;
+        position: relative;
+        display: block;
+        float: left;
+        left: 0;
+        z-index: 1;
+        height: $marker-size;
+        min-width: $marker-size;
+        margin: 0;
+        font-size: 1.3em;
+        white-space: nowrap;
+        font-weight: bold;
+        line-height: $marker-size;
+        text-align: left;
+      }
+
+      &--weekend {
+        background-color: $color-gray-100;
+
+        h3 {
+          color: $color-blue-500;
+        }
+      }
+
+      .reminders {
+        position: relative;
+        z-index: 1;
+
+        &,
+        &__list,
+        &__counter {
+          width: 100%;
+        }
+
+        &__list {
+          height: ($reminder-height + $reminders-gap) * 3;
+          overflow-y: hidden;
+        }
+
+        &__counter {
+          font-size: 80%;
+        }
+
+        .reminder {
+          $icon-size: $reminder-height;
+          position: relative;
+          appearance: none;
+          display: block;
+          width: 100%;
+          height: $reminder-height;
+          line-height: $reminder-height;
+          padding: 0 #{$icon-size + $grid-padding} 0 $grid-padding;
+          border-radius: 3px;
+          background-color: $color-gray-500;
+          color: $color-white;
+          text-align: left;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          border: none;
+          cursor: pointer;
+
+          &__weather-icon {
+            position: absolute;
+            top: 0;
+            right: $grid-padding / 2;
+            z-index: 1;
+            display: block;
+            height: $reminder-height;
+            width: auto;
+          }
+
+          &--red {
+            background-color: $reminder-color-red;
+          }
+
+          &--green {
+            background-color: $reminder-color-green;
+          }
+
+          &--yellow {
+            background-color: $reminder-color-yellow;
+          }
+
+          &--purple {
+            background-color: $reminder-color-purple;
+          }
+        }
+      }
+
+      .reminder + .reminder {
+        margin-top: $reminders-gap;
+      }
+
+      &:not(.grid__cell--dummy) {
+        &:focus,
+        &:hover,
+        &:active {
+          background-color: $color-blue-100;
+        }
+      }
+
+      &--dummy {
+        cursor: default;
+        background-color: $color-white;
+      }
+    }
+  }
 }

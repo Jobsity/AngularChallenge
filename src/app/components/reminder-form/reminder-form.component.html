@@ -1,1 +1,92 @@
-<p>Reminder form will be here :)</p>
+<form [formGroup]="form"
+      class="form">
+  <div class="form__row">
+    <mat-form-field appearance="fill" class="form__field">
+      <mat-label>City</mat-label>
+      <input matInput formControlName="cityField">
+    </mat-form-field>
+  </div>
+
+  <div class="form__row weather">
+    <ng-container *ngIf="data.weatherForecast?.iconUrl !== null; else weatherPlaceholder">
+      <img
+        [src]="data.weatherForecast?.iconUrl"
+        alt="weather"
+        class="weather__icon">
+
+      <div class="weather__condition">
+        <div class="condition__t">{{ data.weatherForecast?.temperature | number: '1.1-1'}}°C</div>
+        <div class="condition__description">
+          {{ data.weatherForecast?.condition }}
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #weatherPlaceholder>
+      Weather is loading...
+    </ng-template>
+  </div>
+
+  <div class="form__row">
+    <mat-form-field appearance="fill" class="form__field">
+      <mat-label>Day</mat-label>
+      <mat-select formControlName="dayField">
+        <mat-option *ngFor="let day of days" [value]="day.id">
+          {{ day.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="form__row">
+    <mat-form-field appearance="fill" class="form__field">
+      <mat-label>Time</mat-label>
+      <input matInput type="time" formControlName="timeField">
+    </mat-form-field>
+  </div>
+
+  <div class="form__row">
+    <mat-form-field appearance="fill" class="form__field">
+      <mat-label>Note</mat-label>
+      <textarea
+        matInput
+        formControlName="noteField"
+        rows="3"
+        maxlength="30"
+      ></textarea>
+      <mat-hint align="end">
+        {{ form.get('noteField')?.value?.length || 0 }}/30
+      </mat-hint>
+      <mat-error *ngIf="form.get('noteField')?.hasError('maxlength')">
+        Maximum 30 characters allowed
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form__row">
+    <mat-form-field appearance="fill" class="form__field">
+      <mat-label>Color</mat-label>
+      <mat-select formControlName="colorField">
+        <mat-option *ngFor="let color of colorKeys | keyvalue" [value]="color.key">
+          <i class="color-swatch color-swatch--{{color.key}}"></i> <span>{{ color.value }}</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="form__row">
+    <button mat-raised-button
+            color="primary"
+            type="button"
+            (click)="onSave()">
+      Save
+    </button>
+
+    <button mat-stroked-button
+            *ngIf="isExistent"
+            color="warn"
+            type="button"
+            (click)="onDelete()">
+      Delete
+    </button>
+  </div>
+</form>
